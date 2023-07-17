@@ -13,6 +13,7 @@ const port = process.env.PORT || 5000;
 
 //connect to mongoDB
 mongoose
+  // .connect("mongodb://127.0.0.1:27017/mernDB0716")
   .connect(process.env.MONGODB_CONNECTION)
   .then(() => {
     console.log("Connect to mongodb...");
@@ -38,6 +39,10 @@ app.use(
   courseRoutes
 );
 
+// app.listen(8080, () => {
+//   console.log("Sever running on port 8080");
+// });
+
 app.listen(port, () => {
-  console.log(`Sever running on port ${port}`);
+  console.log("Sever running on port 8080");
 });

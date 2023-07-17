@@ -16,7 +16,11 @@ router.patch("/changeInfo/:_id", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let { _id } = req.params;
-  let { username, email } = req.body;
+  let { username, email, password } = req.body;
+
+  if (_id != req.user._id) {
+    return res.status(400).send("請以正確的JWT進行請求");
+  }
 
   try {
     let foundUser = await User.findOne({ _id }).exec();
@@ -29,15 +33,23 @@ router.patch("/changeInfo/:_id", async (req, res) => {
       return res.status(400).send("信箱已被其他使用者註冊過，請嘗試另一個信箱");
     }
 
-    let updatedUser = await User.findOneAndUpdate(
-      { _id },
-      { username, email },
-      {
-        new: true,
-        runValidators: true,
+    foundUserByEmail.comparePassword(password, async (err, isMatch) => {
+      if (err) return res.status(500).send(err);
+
+      if (isMatch) {
+        let updatedUser = await User.findOneAndUpdate(
+          { _id },
+          { username, email },
+          {
+            new: true,
+            runValidators: true,
+          }
+        ).exec();
+        return res.send(updatedUser);
+      } else {
+        return res.status(400).send("密碼錯誤");
       }
-    );
-    return res.send(updatedUser);
+    });
   } catch (e) {
     console.log(e);
     return res.status(500).send(e);
@@ -51,6 +63,10 @@ router.patch("/changePassword/:_id", async (req, res) => {
 
   let { _id } = req.params;
   let { oldPassword, newPassword } = req.body;
+
+  if (_id != req.user._id) {
+    return res.status(400).send("請以正確的JWT進行請求");
+  }
 
   try {
     let foundUser = await User.findOne({ _id }).exec();

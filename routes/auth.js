@@ -45,6 +45,14 @@ router.post("/login", async (req, res) => {
     return res.status(401).send("無法找到使用者，請確認信箱是否輸入錯誤");
   }
 
+  let userObj = {
+    _id: foundUser._id,
+    username: foundUser.username,
+    email: foundUser.email,
+    date: foundUser.date,
+    role: foundUser.role,
+  };
+
   foundUser.comparePassword(password, (err, isMatch) => {
     if (err) return res.status(500).send(err);
 
@@ -54,7 +62,7 @@ router.post("/login", async (req, res) => {
       return res.send({
         msg: "登入成功",
         token: "JWT " + token,
-        user: foundUser,
+        user: userObj,
       });
     } else {
       return res.status(400).send("密碼錯誤");
