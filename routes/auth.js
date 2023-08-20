@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
   try {
     let newUser = new User({ username, email, password, role });
     let savedUser = await newUser.save();
-    return res.send({
+    return res.status(201).send({
       msg: "成功註冊使用者",
       savedUser,
     });
@@ -65,7 +65,7 @@ router.post("/login", async (req, res) => {
         user: userObj,
       });
     } else {
-      return res.status(400).send("密碼錯誤");
+      return res.status(401).send("密碼錯誤");
     }
   });
 });

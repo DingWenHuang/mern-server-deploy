@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   if (req.user.isStudent()) {
-    return res.status(400).send("只有老師才可以新增課程");
+    return res.status(403).send("只有老師才可以新增課程");
   }
 
   let { title, description, price } = req.body;
@@ -81,7 +81,7 @@ router.patch("/:_id", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   if (req.user.isStudent()) {
-    return res.status(400).send("只有老師才可以新增課程");
+    return res.status(403).send("只有老師才可以更新課程");
   }
 
   let { _id } = req.params;
@@ -112,6 +112,10 @@ router.patch("/:_id", async (req, res) => {
 router.delete("/:_id", async (req, res) => {
   let { _id } = req.params;
 
+  if (req.user.isStudent()) {
+    return res.status(403).send("只有老師才可以刪除課程");
+  }
+
   try {
     let courseFound = await Course.findOne({ _id }).exec();
     if (!courseFound) {
@@ -129,6 +133,10 @@ router.delete("/:_id", async (req, res) => {
 
 // 透過講師ID查詢開設的課程
 router.get("/instructor/:_instructor_id", async (req, res) => {
+  if (req.user.isStudent()) {
+    return res.status(403).send("只有老師才可以查詢開設的課程");
+  }
+
   let { _instructor_id } = req.params;
   try {
     let coursesFound = await Course.find({ instructor: _instructor_id })
@@ -213,10 +221,6 @@ router.post("/enroll/:_id", async (req, res) => {
 
 // 退選課程
 router.patch("/drop/:_id", async (req, res) => {
-  if (req.user.isInstructor()) {
-    return res.status(400).send("只有學生才可以退選課程");
-  }
-
   let { _id } = req.params;
 
   try {

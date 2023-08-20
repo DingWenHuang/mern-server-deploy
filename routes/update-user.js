@@ -47,7 +47,7 @@ router.patch("/changeInfo/:_id", async (req, res) => {
         ).exec();
         return res.send(updatedUser);
       } else {
-        return res.status(400).send("密碼錯誤");
+        return res.status(401).send("密碼錯誤");
       }
     });
   } catch (e) {
@@ -90,7 +90,7 @@ router.patch("/changePassword/:_id", async (req, res) => {
         ).exec();
         return res.send(updatedUser);
       } else {
-        return res.status(400).send("密碼錯誤");
+        return res.status(401).send("密碼錯誤");
       }
     });
   } catch (e) {
