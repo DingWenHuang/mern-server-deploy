@@ -44,5 +44,5 @@ app.use(
 // });
 
 app.listen(port, () => {
-  console.log("Sever running on port 8080");
+  console.log("Sever running on port" + port);
 });
