@@ -39,6 +39,7 @@ userSchema.methods.isInstructor = function () {
   return this.role == "instructor";
 };
 
+// 建立一個方法，用來比對使用者輸入的密碼與資料庫中的密碼是否相同
 userSchema.methods.comparePassword = async function (password, callback) {
   let result;
   try {
@@ -49,6 +50,7 @@ userSchema.methods.comparePassword = async function (password, callback) {
   }
 };
 
+// 當使用者註冊或更新密碼時，將密碼加密後再存入資料庫
 userSchema.pre("save", async function (next) {
   if (this.isNew || this.isModefied("password")) {
     let hashedPassword = await bcrypt.hash(this.password, 12);

@@ -1,5 +1,6 @@
 const Joi = require("joi");
 
+// 驗證註冊資料格式
 const registerValidation = (data) => {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
@@ -11,6 +12,7 @@ const registerValidation = (data) => {
   return schema.validate(data);
 };
 
+// 驗證登入資料格式
 const loginValidation = (data) => {
   const schema = Joi.object({
     email: Joi.string().min(6).max(50).required().email(),
@@ -20,6 +22,7 @@ const loginValidation = (data) => {
   return schema.validate(data);
 };
 
+// 驗證課程資料格式
 const courseValidation = (data) => {
   const schema = Joi.object({
     title: Joi.string().min(6).max(50).required(),
@@ -29,6 +32,7 @@ const courseValidation = (data) => {
   return schema.validate(data);
 };
 
+// 驗證更新使用者資料格式
 const updateUserValidation = (data) => {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
@@ -38,6 +42,7 @@ const updateUserValidation = (data) => {
   return schema.validate(data);
 };
 
+// 驗證更新使用者密碼格式
 const changePasswordValidation = (data) => {
   const schema = Joi.object({
     oldPassword: Joi.string().min(6).max(255).required(),

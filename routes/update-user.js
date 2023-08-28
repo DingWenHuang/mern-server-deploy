@@ -45,7 +45,16 @@ router.patch("/changeInfo/:_id", async (req, res) => {
             runValidators: true,
           }
         ).exec();
-        return res.send(updatedUser);
+
+        let userObj = {
+          _id: updatedUser._id,
+          username: updatedUser.username,
+          email: updatedUser.email,
+          date: updatedUser.date,
+          role: updatedUser.role,
+        };
+
+        return res.send(userObj);
       } else {
         return res.status(401).send("密碼錯誤");
       }
@@ -88,7 +97,16 @@ router.patch("/changePassword/:_id", async (req, res) => {
             runValidators: true,
           }
         ).exec();
-        return res.send(updatedUser);
+
+        let userObj = {
+          _id: updatedUser._id,
+          username: updatedUser.username,
+          email: updatedUser.email,
+          date: updatedUser.date,
+          role: updatedUser.role,
+        };
+
+        return res.send(userObj);
       } else {
         return res.status(401).send("密碼錯誤");
       }

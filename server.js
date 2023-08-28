@@ -13,7 +13,6 @@ const port = process.env.PORT || 5000;
 
 //connect to mongoDB
 mongoose
-  // .connect("mongodb://127.0.0.1:27017/mernDB0716")
   .connect(process.env.MONGODB_CONNECTION)
   .then(() => {
     console.log("Connect to mongodb...");
@@ -22,11 +21,12 @@ mongoose
     console.log(e);
   });
 
-//set middleware and view engine
+//set middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// 要求進入 /api/user/update與 /api/courses路徑時，必須先經過passport驗證JWT
 app.use("/api/user", authRoutes);
 app.use(
   "/api/user/update",
@@ -38,10 +38,6 @@ app.use(
   passport.authenticate("jwt", { session: false }),
   courseRoutes
 );
-
-// app.listen(8080, () => {
-//   console.log("Sever running on port 8080");
-// });
 
 app.listen(port, () => {
   console.log("Sever running on port" + port);

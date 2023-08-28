@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const registerValidation = require("../validation").registerValidation;
 const loginValidation = require("../validation").loginValidation;
-const updateUserValidation = require("../validation").updateUserValidation;
 const User = require("../models").user;
 const jwt = require("jsonwebtoken");
 
@@ -25,9 +24,16 @@ router.post("/register", async (req, res) => {
   try {
     let newUser = new User({ username, email, password, role });
     let savedUser = await newUser.save();
+    let userObj = {
+      _id: savedUser._id,
+      username: savedUser.username,
+      email: savedUser.email,
+      date: savedUser.date,
+      role: savedUser.role,
+    };
     return res.status(201).send({
       msg: "成功註冊使用者",
-      savedUser,
+      userObj,
     });
   } catch (e) {
     returnres.send(e);
