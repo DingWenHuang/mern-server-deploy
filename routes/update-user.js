@@ -33,7 +33,7 @@ router.patch("/changeInfo/:_id", async (req, res) => {
       return res.status(400).send("信箱已被其他使用者註冊過，請嘗試另一個信箱");
     }
 
-    foundUserByEmail.comparePassword(password, async (err, isMatch) => {
+    foundUser.comparePassword(password, async (err, isMatch) => {
       if (err) return res.status(500).send(err);
 
       if (isMatch) {
