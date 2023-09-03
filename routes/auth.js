@@ -10,6 +10,7 @@ router.get("/test", (req, res) => {
 
 router.head("/wakeup", async (req, res) => {
   await User.findOne({ email: "wakeup@test.com" }).exec();
+  return res.send("wakeup API.....");
 });
 
 // 註冊使用者
