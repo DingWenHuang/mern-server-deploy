@@ -8,6 +8,10 @@ router.get("/test", (req, res) => {
   return res.send("test routes.js.....");
 });
 
+router.head("/wakeup", async (req, res) => {
+  await User.findOne({ email: "wakeup@test.com" }).exec();
+});
+
 // 註冊使用者
 router.post("/register", async (req, res) => {
   let { error } = registerValidation(req.body);
