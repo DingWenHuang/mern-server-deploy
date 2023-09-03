@@ -42,3 +42,5 @@ app.use(
 app.listen(port, () => {
   console.log("Sever running on port" + port);
 });
+
+module.exports = app;

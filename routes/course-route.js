@@ -20,8 +20,8 @@ router.post("/", async (req, res) => {
       price,
       instructor: req.user._id,
     });
-    await newCourse.save();
-    return res.send("課程創建成功");
+    let savedCourse = await newCourse.save();
+    return res.status(201).send({ msg: "課程創建成功", course: savedCourse });
   } catch (e) {
     return res.status(500).send("無法創建課程。。。");
   }
@@ -29,6 +29,9 @@ router.post("/", async (req, res) => {
 
 // 取得所有課程
 router.get("/", async (req, res) => {
+  if (req.user.isInstructor()) {
+    return res.status(403).send("只有學生才可以查詢課程");
+  }
   let { sort } = req.query;
   let sortObj;
   switch (sort) {
@@ -101,7 +104,7 @@ router.patch("/:_id", async (req, res) => {
     });
     return res.send({
       msg: "課程更新成功",
-      updatedCourse,
+      course: updatedCourse,
     });
   } catch (e) {
     return res.status(500).send(e);
@@ -125,7 +128,7 @@ router.delete("/:_id", async (req, res) => {
       return res.status(403).send("只有該課程講師才可以刪除課程");
     }
     await Course.deleteOne({ _id }).exec();
-    return res.send("成功刪除課程");
+    return res.status(204).send("成功刪除課程");
   } catch (e) {
     return res.status(500).send(e);
   }
@@ -150,6 +153,10 @@ router.get("/instructor/:_instructor_id", async (req, res) => {
 
 // 透過學生ID查詢註冊的課程
 router.get("/student/:_student_id", async (req, res) => {
+  if (req.user.isInstructor()) {
+    return res.status(403).send("只有學生才可以查詢註冊的課程");
+  }
+
   let { _student_id } = req.params;
   try {
     let coursesFound = await Course.find({ students: _student_id })
@@ -202,15 +209,23 @@ router.get("/findByName/:title", async (req, res) => {
 
 // 註冊課程
 router.post("/enroll/:_id", async (req, res) => {
+  if (req.user.isInstructor()) {
+    return res.status(403).send("只有學生才可以註冊課程");
+  }
+
   let { _id } = req.params;
   try {
     let courseFound = await Course.findOne({ _id }).exec();
 
+    if (!courseFound) {
+      return res.status(400).send("找不到該課程，無法註冊課程");
+    }
+
     if (!courseFound.students.includes(req.user._id)) {
       courseFound.students.push(req.user._id);
       courseFound.studentLength++;
-      await courseFound.save();
-      return res.send("註冊成功");
+      let savedCourse = await courseFound.save();
+      return res.send({ msg: "註冊成功", course: savedCourse });
     } else {
       return res.status(400).send("您已經註冊過該課程");
     }
@@ -241,7 +256,7 @@ router.patch("/drop/:_id", async (req, res) => {
       }
     );
     return res.send({
-      msg: "成功更新課程",
+      msg: "退選成功",
       course: updatedCourse,
     });
   } catch (e) {
